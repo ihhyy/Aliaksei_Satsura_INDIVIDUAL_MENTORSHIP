@@ -1,20 +1,16 @@
 ﻿using BL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
 using Newtonsoft.Json;
+using System.Configuration;
 
 namespace BL.Services
 {
     public class WeatherServices : IWeatherService
     {
         static readonly HttpClient client = new HttpClient();
-        private readonly string APIKey = "2a1e352deac76c1b856f00075b07cd74";
+        private readonly string APIKey = ConfigurationManager.AppSettings["APIKey"];
 
         public async Task<string> GetWeatherByCytyName(string cityName)
         {
