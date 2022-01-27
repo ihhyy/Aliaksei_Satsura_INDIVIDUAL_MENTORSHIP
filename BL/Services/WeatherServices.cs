@@ -4,28 +4,24 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using Newtonsoft.Json;
 using System.Configuration;
+using DAL.Interfaces;
 
 namespace BL.Services
 {
     public class WeatherServices : IWeatherService
     {
-        static readonly HttpClient client = new HttpClient();
-        private readonly string APIKey = ConfigurationManager.AppSettings["APIKey"];
+        private IWeatherRepository _weatherRepositiry;
+
+        public WeatherServices(IWeatherRepository weatherRepository)
+        {
+            _weatherRepositiry = weatherRepository;
+        }
 
         public async Task<string> GetWeatherByCytyName(string cityName)
         {
-            HttpResponseMessage response = await client.GetAsync("https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey + "&units=metric");
-            var responceBody = await response.Content.ReadAsStringAsync();
-
-            Weather weather =
-                JsonConvert.DeserializeObject<Weather>(responceBody);
-
-            if (responceBody.Contains("main"))
-                return MessageSelector(weather);
-            else
-                return "Empty field or invalid city name";
+            var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName);
+            return MessageSelector(weather);
         }
-
 
         private string MessageSelector(Weather weather)
         {

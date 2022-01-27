@@ -1,7 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectConfiguration Include="..\ConsoleApp\App.config" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Configuration">
+	    
+	  </Reference>
+	</ItemGroup>
 
 </Project>
