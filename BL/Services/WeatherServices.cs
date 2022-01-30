@@ -1,11 +1,7 @@
 ﻿using BL.Interfaces;
-using System.Net.Http;
 using System.Threading.Tasks;
 using DAL.Entities;
-using Newtonsoft.Json;
-using System.Configuration;
 using DAL.Interfaces;
-using BL.DTOs;
 
 namespace BL.Services
 {
@@ -31,6 +27,8 @@ namespace BL.Services
 
         private string SelectMessage(Weather weather)
         {
+            _validator.ValidateOutput(weather);
+
             double temp;
 
             temp = weather.Main.Temp;

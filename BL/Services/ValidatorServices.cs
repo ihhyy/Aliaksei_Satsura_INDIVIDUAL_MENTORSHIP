@@ -1,7 +1,6 @@
 ﻿using BL.Interfaces;
+using DAL.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BL.Services
 {
@@ -11,6 +10,12 @@ namespace BL.Services
         {
             if (string.IsNullOrEmpty(input))
                 throw new Exception("Empty input string");
+        }
+
+        public void ValidateOutput(Weather output)
+        {
+            if (output.Cod == 404)
+                throw new Exception("Incorrect city name or city not found");
         }
     }
 }
