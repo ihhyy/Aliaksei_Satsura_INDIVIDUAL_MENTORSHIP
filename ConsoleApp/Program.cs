@@ -47,11 +47,11 @@ namespace ConsoleApp
             Console.WriteLine("Getting weather by city name");
             Console.WriteLine("Enter city name");
             var cityName = Console.ReadLine();
-            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
 
             try
             {
                 await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
+                Console.WriteLine(await _weatherService.GetWeatherByCytyNameAsync(cityName, _key));
             }
             catch(Exception ex)
             {
