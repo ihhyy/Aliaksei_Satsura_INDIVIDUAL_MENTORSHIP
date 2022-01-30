@@ -8,6 +8,6 @@ namespace DAL.Interfaces
 {
     public interface IWeatherRepository
     {
-        Task<Weather> GetWeatherByCityNameAsync(string cityName);
+        Task<Weather> GetWeatherByCityNameAsync(string cityName, string key);
     }
 }

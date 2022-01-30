@@ -2,32 +2,34 @@
 using DAL.Interfaces;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class WeatherRepository : IWeatherRepository
     {
-
-        private readonly string APIKey;
-        private readonly HttpClient client;
+        private readonly HttpClient _client;
+        private readonly string _API;
 
         public WeatherRepository()
         {
-            APIKey = ConfigurationManager.AppSettings["APIKey"];
-            client = new HttpClient();
+            _client = new HttpClient();
+            _API = ConfigurationManager.AppSettings["url"];
         }
 
-        public async Task<Weather> GetWeatherByCityNameAsync(string cityName)
+        public async Task<Weather> GetWeatherByCityNameAsync(string cityName, string key)
         {
-            HttpResponseMessage response = await client.GetAsync("https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey + "&units=metric");
-            var responceBody = await response.Content.ReadAsStringAsync();
-            var weather = JsonConvert.DeserializeObject<Weather>(responceBody);
-            return weather;
+            var response = await _client.GetAsync($"{_API}q={cityName}&appid={key}&units=metric");
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var weather = JsonConvert.DeserializeObject<Weather>(responseBody);
+
+            if (weather.Cod >= 500)
+                throw new Exception("Server error");
+            else
+                return weather;
         }
     }
 }
+

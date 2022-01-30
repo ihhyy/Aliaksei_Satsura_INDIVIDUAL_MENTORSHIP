@@ -13,10 +13,4 @@
 		<ProjectConfiguration Include="..\ConsoleApp\App.config" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Reference Include="System.Configuration">
-	    
-	  </Reference>
-	</ItemGroup>
-
 </Project>

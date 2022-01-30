@@ -7,6 +7,9 @@ namespace DAL.Entities
     public class Weather
     {
         public Temperatures Main { get; set; }
+
         public string Name { get; set; }
+
+        public int Cod { get; set; }
     }
 }

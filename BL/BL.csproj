@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj" />
-	<ProjectConfiguration Include="..\ConsoleApp\App.config"/>
+	<ProjectConfiguration Include="..\ConsoleApp\App.config" />
   </ItemGroup>
 
 </Project>
