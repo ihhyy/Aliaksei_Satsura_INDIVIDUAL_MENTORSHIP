@@ -16,22 +16,22 @@ namespace BL.Services
             _validator = validator;
         }
 
-        public async Task<string> GetWeatherByCytyNameAsync(string cityName, string key)
+        public async Task<Weather> GetWeatherByCytyNameAsync(string cityName, string key)
         {
             _validator.ValidateInput(cityName);
 
             var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName, key);
 
-            return SelectMessage(weather);
+            weather.Message = SelectMessage(weather);
+
+            return weather;
         }
 
         private string SelectMessage(Weather weather)
         {
             _validator.ValidateOutput(weather);
 
-            double temp;
-
-            temp = weather.Main.Temp;
+            var temp = weather.Main.Temp;
 
             if (temp < 0)
                 return $"In {weather.Name} {temp} °C now. Dress warm";

@@ -14,7 +14,7 @@ namespace BL.Services
 
         public void ValidateOutput(Weather output)
         {
-            if (output.Cod == 404)
+            if (output == null)
                 throw new Exception("Incorrect city name or city not found");
         }
     }

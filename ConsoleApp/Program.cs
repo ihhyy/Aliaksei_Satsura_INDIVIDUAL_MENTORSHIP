@@ -50,8 +50,8 @@ namespace ConsoleApp
 
             try
             {
-                await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
-                Console.WriteLine(await _weatherService.GetWeatherByCytyNameAsync(cityName, _key));
+                var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
+                Console.WriteLine(weather.Message);
             }
             catch(Exception ex)
             {
