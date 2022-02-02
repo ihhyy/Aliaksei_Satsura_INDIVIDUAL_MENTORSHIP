@@ -1,75 +1,45 @@
 ﻿using BL.Interfaces;
 using BL.Services;
-using DAL.Entities;
+using BL.CustomExceptions;
 using System;
-using Tests.Fixtures;
 using Xunit;
 
 namespace Tests.Services
 {
     public class ValidatorTest
     {
-        private readonly WeatherFixture _weatherFixture;
         private readonly IValidator _validator;
 
         public ValidatorTest()
         {
-            _weatherFixture = new WeatherFixture();
-            _validator = new ValidatorServices();
+            _validator = new Validator();
         }
 
         [Fact]
-        public void ValidateInput_IncorrectInput()
+        public void ValidateInput_IncorrectInput_ThrowException()
         {
             //Arrange
-            var input = "";
+            var input = string.Empty;
 
             //Act
             Action result = () => _validator.ValidateInput(input);
 
             //Assert
-            Assert.Throws<Exception>(result);
+            var exception = Assert.Throws<EmptyInputException>(result);
+            Assert.Equal("Empty input field", exception.Message);
         }
 
         [Fact]
-        public void ValidateOutput_IncorrectOutput()
-        {
-            //Arrange
-            Weather output = null;
-
-            //Act
-            Action result = () => _validator.ValidateOutput(output);
-
-            //Assert
-            Assert.Throws<Exception>(result);
-        }
-
-        [Fact]
-        public void ValidateOutput_CorrectOutput()
-        {
-            //Arrange
-            var output = _weatherFixture.GetWeather()[0];
-
-            //Act
-            Action result = () => _validator.ValidateOutput(output);
-            result.Invoke();
-
-            //Assert
-            Assert.True(true);
-        }
-
-        [Fact]
-        public void ValidateInput_CorrectInput()
+        public void ValidateInput_CorrectInput_PassSuccessfully()
         {
             //Arrange
             var input = "string";
 
             //Act
-            Action result = () => _validator.ValidateInput(input);
-            result.Invoke();
+            var exception = Record.Exception(() => _validator.ValidateInput(input));
 
             //Assert
-            Assert.True(true);
+            Assert.Null(exception);
         }
     }
 }

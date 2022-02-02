@@ -1,10 +1,10 @@
-﻿using DAL.Entities;
+﻿using BL.DTOs;
 using System.Threading.Tasks;
 
 namespace BL.Interfaces
 {
     public interface IWeatherService
     {
-        Task<Weather> GetWeatherByCytyNameAsync(string cityName, string key);
+        Task<WeatherDto> GetWeatherByCytyNameAsync(string cityName);
     }
 }

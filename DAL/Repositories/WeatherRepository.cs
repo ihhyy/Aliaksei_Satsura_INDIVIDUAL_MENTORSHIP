@@ -12,16 +12,18 @@ namespace DAL.Repositories
     {
         private readonly HttpClient _client;
         private readonly string _API;
+        private readonly string _key;
 
-        public WeatherRepository()
+        public WeatherRepository(string key, string API)
         {
             _client = new HttpClient();
-            _API = ConfigurationManager.AppSettings["url"];
+            _API = API;
+            _key = key;
         }
 
-        public async Task<Weather> GetWeatherByCityNameAsync(string cityName, string key)
+        public async Task<Weather> GetWeatherByCityNameAsync(string cityName)
         {
-            var response = await _client.GetAsync($"{_API}q={cityName}&appid={key}&units=metric");
+            var response = await _client.GetAsync($"{_API}q={cityName}&appid={_key}&units=metric");
             var responseBody = await response.Content.ReadAsStringAsync();
             var weather = JsonConvert.DeserializeObject<Weather>(responseBody);
 

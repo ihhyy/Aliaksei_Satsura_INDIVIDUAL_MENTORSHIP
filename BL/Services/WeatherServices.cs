@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Interfaces;
+using BL.DTOs;
+using BL.CustomExceptions;
 
 namespace BL.Services
 {
@@ -16,31 +18,40 @@ namespace BL.Services
             _validator = validator;
         }
 
-        public async Task<Weather> GetWeatherByCytyNameAsync(string cityName, string key)
+        public async Task<WeatherDto> GetWeatherByCytyNameAsync(string cityName)
         {
             _validator.ValidateInput(cityName);
 
-            var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName, key);
+            var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName);
 
-            weather.Message = SelectMessage(weather);
-
-            return weather;
+            return MapEntityToWeatherDto(weather);
         }
 
-        private string SelectMessage(Weather weather)
+        private WeatherDto MapEntityToWeatherDto(Weather weather)
         {
-            _validator.ValidateOutput(weather);
+            if (weather.Main == null)
+                throw new NullEntityException();
 
-            var temp = weather.Main.Temp;
+            var weatherDto = new WeatherDto
+            {
+                CityName = weather.Name,
+                Temp = weather.Main.Temp,
+                Message = SelectMessage(weather.Main.Temp, weather.Name)
+            };
 
+            return weatherDto;
+        }
+
+        private string SelectMessage(double temp, string city)
+        {
             if (temp < 0)
-                return $"In {weather.Name} {temp} °C now. Dress warm";
+                return $"In {city} {temp} °C now. Dress warm";
             if (temp > 0 && temp < 20)
-                return $"In {weather.Name} {temp} °C now. It's fresh";
+                return $"In {city} {temp} °C now. It's fresh";
             if (temp > 20 && temp < 30)
-                return $"In {weather.Name} {temp} °C now. Good weather";
+                return $"In {city} {temp} °C now. Good weather";
             else
-                return $"In {weather.Name} {temp} °C now. It's time to go to the beach";
+                return $"In {city} {temp} °C now. It's time to go to the beach";
         }
     }
 }

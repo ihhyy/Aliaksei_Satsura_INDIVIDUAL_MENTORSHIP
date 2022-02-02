@@ -22,22 +22,25 @@ namespace Tests.Services
             _repoValidator = new Mock<IValidator>();
             _repoMock = new Mock<IWeatherRepository>();
             _weatherService = new WeatherServices(_repoMock.Object, _repoValidator.Object);
-            
+
         }
 
-        [Fact]
-        public async void GetWeatherAsync_CorrectInput()
+        [Theory]
+        [InlineData("Oslo")]
+        //[InlineData("Minsk")]
+        //[InlineData("Canberra")]
+        //[InlineData("Cairo")]
+        public async void GetWeatherAsync_CorrectInput_ReturnMessage(string cityName)
         {
             //Arrange
-            var cityName = _weatherFixture.GetWeather()[0].Name;
-            var expectedCity = _weatherFixture.GetWeather()[0];
-            _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(expectedCity);
+            var expected = _weatherFixture.GetWeather()[0];
+            _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
             //Act
-            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
+            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
 
             //Assert
-            Assert.Equal(weather.Name, cityName);
+            Assert.Equal(weather.Message, $"In {expected.Name} {expected.Main.Temp} °C now. Dress warm");
         }
     }
 }

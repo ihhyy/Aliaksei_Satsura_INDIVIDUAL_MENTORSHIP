@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using BL.CustomExceptions;
 using BL.Interfaces;
 using BL.Services;
 using DAL.Interfaces;
@@ -10,10 +11,11 @@ namespace ConsoleApp
 {
     class Program
     {
-        private static IWeatherRepository _weatherRepository = new WeatherRepository();
-        private static IValidator _validator = new ValidatorServices();
+        private static readonly string _key = ConfigurationManager.AppSettings["APIKey"];
+        private static readonly string _API = ConfigurationManager.AppSettings["url"];
+        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _API);
+        private static IValidator _validator = new Validator();
         private static IWeatherService _weatherService = new WeatherServices(_weatherRepository, _validator);
-        private readonly static string _key = ConfigurationManager.AppSettings["APIKey"];
 
         static async Task Main(string[] args)
         {
@@ -36,6 +38,7 @@ namespace ConsoleApp
                     await GetWeatherByCityNameAsync();
                     return true;
                 case "2":
+                    Console.WriteLine("Exit");
                     return false;
                 default:
                     return true;
@@ -50,10 +53,21 @@ namespace ConsoleApp
 
             try
             {
-                var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName, _key);
+                var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
                 Console.WriteLine(weather.Message);
             }
-            catch(Exception ex)
+
+            catch(NullEntityException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            catch (EmptyInputException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
