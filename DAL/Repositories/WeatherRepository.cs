@@ -28,7 +28,7 @@ namespace DAL.Repositories
             var weather = JsonConvert.DeserializeObject<Weather>(responseBody);
 
             if (weather.Cod >= 500)
-                throw new Exception("Server error");
+                throw new Exception($"Server error: {weather.Main}");
             else
                 return weather;
         }

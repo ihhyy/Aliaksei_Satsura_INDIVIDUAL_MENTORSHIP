@@ -3,6 +3,7 @@ using BL.Services;
 using DAL.Interfaces;
 using Moq;
 using System.Configuration;
+using System.Linq;
 using Tests.Fixtures;
 using Xunit;
 
@@ -33,7 +34,7 @@ namespace Tests.Services
         public async void GetWeatherAsync_CorrectInput_ReturnMessage(string cityName)
         {
             //Arrange
-            var expected = _weatherFixture.GetWeather()[0];
+            var expected = _weatherFixture.GetWeather().Where(w => w.Name == cityName).FirstOrDefault();
             _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
             //Act
