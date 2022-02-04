@@ -15,11 +15,12 @@ namespace Tests.Services
             _validator = new Validator();
         }
 
-        [Fact]
-        public void ValidateInput_IncorrectInput_ThrowException()
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ValidateInput_IncorrectInput_ThrowException(string input)
         {
             //Arrange
-            var input = string.Empty;
 
             //Act
             Action result = () => _validator.ValidateInput(input);

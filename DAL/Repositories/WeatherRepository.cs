@@ -2,10 +2,9 @@
 using DAL.Interfaces;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
-using DAL.Enums;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace DAL.Repositories
 {
@@ -28,10 +27,7 @@ namespace DAL.Repositories
             var responseBody = await response.Content.ReadAsStringAsync();
             var weather = JsonConvert.DeserializeObject<Weather>(responseBody);
 
-            if (weather.Code >= 500)
-                throw new Exception($"Server error: {weather.Main}");
-            else
-                return weather;
+            return weather;
         }
     }
 }

@@ -1,9 +1,13 @@
-﻿using BL.Interfaces;
+﻿using BL.CustomExceptions;
+using BL.Interfaces;
 using BL.Services;
+using DAL.Entities;
 using DAL.Interfaces;
 using Moq;
+using System;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using Tests.Fixtures;
 using Xunit;
 
@@ -15,7 +19,6 @@ namespace Tests.Services
         private readonly IWeatherService _weatherService;
         private readonly Mock<IValidator> _repoValidator;
         private readonly Mock<IWeatherRepository> _repoMock;
-        private readonly static string _key = ConfigurationManager.AppSettings["APIKey"];
 
         public WeatherServiceTest()
         {
@@ -42,12 +45,14 @@ namespace Tests.Services
 
             //Assert
             Assert.Equal(weather.Message, message);
+            Assert.False(weather.IsBadRequest);
         }
 
         [Theory]
         [InlineData("Incorrect_case")]
         public async void GetWeatherAsync_InCorrectInput_ReturnMessageWithError(string cityName)
         {
+            //Arrange
             var expected = _weatherFixture.GetWeather().Where(w => w.Name == cityName).FirstOrDefault();
             _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
@@ -56,6 +61,22 @@ namespace Tests.Services
 
             //Assert
             Assert.Equal("City not found or input was incorrect", weather.Message);
+            Assert.True(weather.IsBadRequest);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("Minsk")]
+        public async void GetWeatherAsync_EmptytInput_ReturnMessageWithErrorAsync(string cityName)
+        {
+            //Arrange
+            _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(() => throw new EmptyInputException());
+
+            //Act
+            var result = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCytyNameAsync(cityName));
+
+            //Assert
+            Assert.Equal("Empty input field", result.Message);
         }
     }
 }

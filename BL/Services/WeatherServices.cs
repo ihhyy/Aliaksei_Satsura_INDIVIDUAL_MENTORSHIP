@@ -33,13 +33,13 @@ namespace BL.Services
             if (weather.Main == null)
             {
                 weatherDto.Message = "City not found or input was incorrect";
-                weatherDto.BadRequest = true;
+                weatherDto.IsBadRequest = true;
             }
 
             else
             {
                 weatherDto.Message = SelectMessage(weather.Main.Temp, weather.Name);
-                weatherDto.BadRequest = false;
+                weatherDto.IsBadRequest = false;
             }
 
             return weatherDto;

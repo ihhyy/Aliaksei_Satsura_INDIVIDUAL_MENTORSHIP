@@ -47,7 +47,6 @@ namespace Tests.Fixtures
                     Name = "Incorrect_case",
                     Code = 404
                 },
-
             };
         }
 

@@ -8,6 +8,6 @@ namespace BL.DTOs
     {
         public string Message { get; set; }
     
-        public bool BadRequest { get; set; }
+        public bool IsBadRequest { get; set; }
     }
 }
