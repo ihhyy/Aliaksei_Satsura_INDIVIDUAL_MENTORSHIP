@@ -2,7 +2,8 @@
 using DAL.Interfaces;
 using Newtonsoft.Json;
 using System;
-using System.Configuration;
+using System.Linq;
+using DAL.Enums;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -14,9 +15,9 @@ namespace DAL.Repositories
         private readonly string _API;
         private readonly string _key;
 
-        public WeatherRepository(string key, string API)
+        public WeatherRepository(string key, string API, HttpClient client)
         {
-            _client = new HttpClient();
+            _client = client;
             _API = API;
             _key = key;
         }
@@ -27,7 +28,7 @@ namespace DAL.Repositories
             var responseBody = await response.Content.ReadAsStringAsync();
             var weather = JsonConvert.DeserializeObject<Weather>(responseBody);
 
-            if (weather.Cod >= 500)
+            if (weather.Code >= 500)
                 throw new Exception($"Server error: {weather.Main}");
             else
                 return weather;

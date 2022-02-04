@@ -27,11 +27,11 @@ namespace Tests.Services
         }
 
         [Theory]
-        [InlineData("Oslo")]
-        //[InlineData("Minsk")]
-        //[InlineData("Canberra")]
-        //[InlineData("Cairo")]
-        public async void GetWeatherAsync_CorrectInput_ReturnMessage(string cityName)
+        [InlineData("Oslo", "In Oslo -3 °C now. Dress warm")]
+        [InlineData("Minsk", "In Minsk 5 °C now. It's fresh")]
+        [InlineData("Canberra", "In Canberra 27 °C now. Good weather")]
+        [InlineData("Cairo", "In Cairo 33 °C now. It's time to go to the beach")]
+        public async void GetWeatherAsync_CorrectInput_ReturnMessageWithData(string cityName, string message)
         {
             //Arrange
             var expected = _weatherFixture.GetWeather().Where(w => w.Name == cityName).FirstOrDefault();
@@ -41,7 +41,21 @@ namespace Tests.Services
             var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
 
             //Assert
-            Assert.Equal(weather.Message, $"In {expected.Name} {expected.Main.Temp} °C now. Dress warm");
+            Assert.Equal(weather.Message, message);
+        }
+
+        [Theory]
+        [InlineData("Incorrect_case")]
+        public async void GetWeatherAsync_InCorrectInput_ReturnMessageWithError(string cityName)
+        {
+            var expected = _weatherFixture.GetWeather().Where(w => w.Name == cityName).FirstOrDefault();
+            _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
+
+            //Act
+            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
+
+            //Assert
+            Assert.Equal("City not found or input was incorrect", weather.Message);
         }
     }
 }

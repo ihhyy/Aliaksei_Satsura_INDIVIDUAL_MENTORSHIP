@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BL.CustomExceptions;
 using BL.Interfaces;
@@ -13,7 +14,8 @@ namespace ConsoleApp
     {
         private static readonly string _key = ConfigurationManager.AppSettings["APIKey"];
         private static readonly string _API = ConfigurationManager.AppSettings["url"];
-        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _API);
+        private static readonly HttpClient _client = new HttpClient();
+        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _API, _client);
         private static IValidator _validator = new Validator();
         private static IWeatherService _weatherService = new WeatherServices(_weatherRepository, _validator);
 
@@ -57,19 +59,14 @@ namespace ConsoleApp
                 Console.WriteLine(weather.Message);
             }
 
-            catch(NullEntityException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
             catch (EmptyInputException ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Server error");
             }
         }
     }

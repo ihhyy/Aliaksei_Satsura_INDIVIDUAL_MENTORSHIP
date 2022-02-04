@@ -10,8 +10,7 @@ namespace DAL.Entities
 
         public string Name { get; set; }
 
-        public int Cod { get; set; }
+        public int Code { get; set; }
 
-        public string Message { get; set; }
     }
 }

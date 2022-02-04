@@ -17,35 +17,35 @@ namespace Tests.Fixtures
                 {
                     Main = new Temperatures(){ Temp = -3 },
                     Name = "Oslo",
-                    Cod = 200
+                    Code = 200
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 5 },
                     Name = "Minsk",
-                    Cod = 200
+                    Code = 200
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 27 },
                     Name = "Canberra",
-                    Cod = 200
+                    Code = 200
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 33 },
                     Name = "Cairo",
-                    Cod = 200
+                    Code = 200
                 },
 
                 new Weather()
                 {
-                    Main = new Temperatures(){ Temp = 0 },
+                    Main = null,
                     Name = "Incorrect_case",
-                    Cod = 404
+                    Code = 404
                 },
 
             };

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Interfaces;
 using BL.DTOs;
-using BL.CustomExceptions;
 
 namespace BL.Services
 {
@@ -29,15 +28,19 @@ namespace BL.Services
 
         private WeatherDto MapEntityToWeatherDto(Weather weather)
         {
-            if (weather.Main == null)
-                throw new NullEntityException();
+            var weatherDto = new WeatherDto();
 
-            var weatherDto = new WeatherDto
+            if (weather.Main == null)
             {
-                CityName = weather.Name,
-                Temp = weather.Main.Temp,
-                Message = SelectMessage(weather.Main.Temp, weather.Name)
-            };
+                weatherDto.Message = "City not found or input was incorrect";
+                weatherDto.BadRequest = true;
+            }
+
+            else
+            {
+                weatherDto.Message = SelectMessage(weather.Main.Temp, weather.Name);
+                weatherDto.BadRequest = false;
+            }
 
             return weatherDto;
         }
