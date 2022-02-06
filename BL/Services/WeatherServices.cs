@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Interfaces;
+using BL.DTOs;
 
 namespace BL.Services
 {
@@ -16,31 +17,44 @@ namespace BL.Services
             _validator = validator;
         }
 
-        public async Task<string> GetWeatherByCytyNameAsync(string cityName, string key)
+        public async Task<WeatherDto> GetWeatherByCytyNameAsync(string cityName)
         {
             _validator.ValidateInput(cityName);
 
-            var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName, key);
+            var weather = await _weatherRepositiry.GetWeatherByCityNameAsync(cityName);
 
-            return SelectMessage(weather);
+            return MapEntityToWeatherDto(weather);
         }
 
-        private string SelectMessage(Weather weather)
+        private WeatherDto MapEntityToWeatherDto(Weather weather)
         {
-            _validator.ValidateOutput(weather);
+            var weatherDto = new WeatherDto();
 
-            double temp;
+            if (weather.Main == null)
+            {
+                weatherDto.Message = "City not found or input was incorrect";
+                weatherDto.IsBadRequest = true;
+            }
 
-            temp = weather.Main.Temp;
-
-            if (temp < 0)
-                return $"In {weather.Name} {temp} °C now. Dress warm";
-            if (temp > 0 && temp < 20)
-                return $"In {weather.Name} {temp} °C now. It's fresh";
-            if (temp > 20 && temp < 30)
-                return $"In {weather.Name} {temp} °C now. Good weather";
             else
-                return $"In {weather.Name} {temp} °C now. It's time to go to the beach";
+            {
+                weatherDto.Message = SelectMessage(weather.Main.Temp, weather.Name);
+                weatherDto.IsBadRequest = false;
+            }
+
+            return weatherDto;
+        }
+
+        private string SelectMessage(double temp, string city)
+        {
+            if (temp < 0)
+                return $"In {city} {temp} °C now. Dress warm";
+            if (temp > 0 && temp < 20)
+                return $"In {city} {temp} °C now. It's fresh";
+            if (temp > 20 && temp < 30)
+                return $"In {city} {temp} °C now. Good weather";
+            else
+                return $"In {city} {temp} °C now. It's time to go to the beach";
         }
     }
 }
