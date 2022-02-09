@@ -49,41 +49,46 @@ namespace IntegrationTest.Tests
         public async void GetWeatherAsync_CorrectInput_ReturnMessageWithData(string input)
         {
             //Arrange
+            var appendix1 = " Dress warm";
+            var appendix2 = " It's fresh";
+            var appendix3 = " Good weather";
+            var appendix4 = " It's time to go to the beach";
+            var regerx = new Regex(@".?\d+.\d+");
 
             //Act
-            var output = await _weatherService.GetWeatherByCytyNameAsync(input);
-            var match = Regex.Match(output.Message, @"(\w?)(.*?)\.| (\B\W)(.*?)\.", RegexOptions.IgnorePatternWhitespace).Success;
+            var output = await _weatherService.GetWeatherByCityNameAsync(input);
+            var message = $"In city {input} {regerx} °C now.{appendix1} || {appendix2} || {appendix3} || {appendix4}";
 
             //Assert
 
             Assert.NotNull(output.Message);
-            Assert.True(match);
-            Assert.True(!output.IsBadRequest);
+            Assert.Matches(message, output.Message);
+            Assert.False(output.IsBadRequest);
         }
 
         [Fact]
-        public async Task GetWeatherAsync_EmptytInput_ReturnExceptionAsync()
+        public async Task GetWeatherAsync_EmptyInput_ReturnExceptionAsync()
         {
             //Arrange
             var input = string.Empty;
             var message = "Empty input field";
 
             //Act
-            var output = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCytyNameAsync(input));
+            var output = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCityNameAsync(input));
 
             //Assert
             Assert.Equal(message, output.Message);
         }
 
         [Fact]
-        public async void GetWeatherAsync_EmptytInput_ReturnMessageWithoutDataAsync()
+        public async void GetWeatherAsync_IncorrectInput_ReturnMessageWithoutDataAsync()
         {
             //Arrange
             var input = "Incorrect_input";
             var message = "City not found or input was incorrect";
 
             //Act
-            var output = await _weatherService.GetWeatherByCytyNameAsync(input);
+            var output = await _weatherService.GetWeatherByCityNameAsync(input);
 
             //Assert
             Assert.True(output.IsBadRequest);

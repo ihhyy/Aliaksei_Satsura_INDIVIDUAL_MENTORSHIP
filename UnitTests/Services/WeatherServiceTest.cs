@@ -41,7 +41,7 @@ namespace Tests.Services
             _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
             //Act
-            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
+            var weather = await _weatherService.GetWeatherByCityNameAsync(cityName);
 
             //Assert
             Assert.Equal(weather.Message, message);
@@ -57,7 +57,7 @@ namespace Tests.Services
             _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
             //Act
-            var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
+            var weather = await _weatherService.GetWeatherByCityNameAsync(cityName);
 
             //Assert
             Assert.Equal("City not found or input was incorrect", weather.Message);
@@ -73,7 +73,7 @@ namespace Tests.Services
             _repoMock.Setup(x => x.GetWeatherByCityNameAsync(It.IsAny<string>())).ReturnsAsync(() => throw new EmptyInputException());
 
             //Act
-            var result = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCytyNameAsync(cityName));
+            var result = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCityNameAsync(cityName));
 
             //Assert
             Assert.Equal("Empty input field", result.Message);
