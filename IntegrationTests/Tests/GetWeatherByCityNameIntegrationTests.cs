@@ -13,13 +13,13 @@ namespace IntegrationTest.Tests
 {
     public class GetWeatherByCityNameIntegrationTests
     {
-        private readonly IConfiguration _config;
-        private readonly string _key;
-        private readonly string _API;
         private readonly HttpClient _client;
+        private readonly IConfiguration _config;
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
+        private readonly string _key;
+        private readonly string _API;
 
         public static IConfiguration InitConfiguration()
         {
@@ -33,7 +33,7 @@ namespace IntegrationTest.Tests
         {
             _config = InitConfiguration();
             _key = _config["APIkey"];
-            _API = _config["url"];
+            _API = _config["urlCurrent"];
             _client = new HttpClient();
             _weatherRepository = new WeatherRepository(_key, _API, _client);
             _validator = new Validator();
