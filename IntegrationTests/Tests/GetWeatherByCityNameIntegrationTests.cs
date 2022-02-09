@@ -3,6 +3,7 @@ using BL.Interfaces;
 using BL.Services;
 using DAL.Interfaces;
 using DAL.Repositories;
+using IntegrationTests.Configurations;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -14,26 +15,18 @@ namespace IntegrationTest.Tests
     public class GetWeatherByCityNameIntegrationTests
     {
         private readonly HttpClient _client;
-        private readonly IConfiguration _config;
+        private readonly TestConfig _config;
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
         private readonly string _key;
         private readonly string _API;
 
-        public static IConfiguration InitConfiguration()
-        {
-            var config = new ConfigurationBuilder()
-               .AddJsonFile("testsettings.json")
-                .Build();
-            return config;
-        }
-
         public GetWeatherByCityNameIntegrationTests()
         {
-            _config = InitConfiguration();
-            _key = _config["APIkey"];
-            _API = _config["urlCurrent"];
+            _config = new TestConfig();
+            _key = _config.InitConfiguration()["APIkey"];
+            _API = _config.InitConfiguration()["urlCurrent"];
             _client = new HttpClient();
             _weatherRepository = new WeatherRepository(_key, _API, _client);
             _validator = new Validator();
