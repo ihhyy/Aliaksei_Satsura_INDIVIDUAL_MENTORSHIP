@@ -55,7 +55,7 @@ namespace ConsoleApp
 
             try
             {
-                var weather = await _weatherService.GetWeatherByCytyNameAsync(cityName);
+                var weather = await _weatherService.GetWeatherByCityNameAsync(cityName);
                 Console.WriteLine(weather.Message);
             }
 

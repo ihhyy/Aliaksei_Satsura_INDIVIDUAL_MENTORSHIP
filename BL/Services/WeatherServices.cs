@@ -17,7 +17,7 @@ namespace BL.Services
             _validator = validator;
         }
 
-        public async Task<WeatherDto> GetWeatherByCytyNameAsync(string cityName)
+        public async Task<WeatherDto> GetWeatherByCityNameAsync(string cityName)
         {
             _validator.ValidateInput(cityName);
 
