@@ -15,7 +15,7 @@ namespace IntegrationTest.Tests
     public class GetWeatherByCityNameIntegrationTests
     {
         private readonly HttpClient _client;
-        private readonly TestConfig _config;
+        private readonly IConfiguration _config;
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
@@ -24,9 +24,9 @@ namespace IntegrationTest.Tests
 
         public GetWeatherByCityNameIntegrationTests()
         {
-            _config = new TestConfig();
-            _key = _config.InitConfiguration()["APIkey"];
-            _API = _config.InitConfiguration()["urlCurrent"];
+            _config = new TestConfig().InitConfiguration();
+            _key = _config["APIkey"];
+            _API = _config["url"];
             _client = new HttpClient();
             _weatherRepository = new WeatherRepository(_key, _API, _client);
             _validator = new Validator();
@@ -46,11 +46,11 @@ namespace IntegrationTest.Tests
             var appendix2 = " It's fresh";
             var appendix3 = " Good weather";
             var appendix4 = " It's time to go to the beach";
-            var regerx = new Regex(@".?\d+.\d+");
+            var regex = new Regex(@".?\d+.\d+");
+            var message = $"In city {input} {regex} °C now.{appendix1} || {appendix2} || {appendix3} || {appendix4}";
 
             //Act
             var output = await _weatherService.GetWeatherByCityNameAsync(input);
-            var message = $"In city {input} {regerx} °C now.{appendix1} || {appendix2} || {appendix3} || {appendix4}";
 
             //Assert
 
