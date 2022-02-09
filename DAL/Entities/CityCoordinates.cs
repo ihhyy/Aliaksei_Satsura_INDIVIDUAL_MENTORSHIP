@@ -4,12 +4,9 @@ using System.Text;
 
 namespace DAL.Entities
 {
-    public class Weather
+    public class CityCoordinates
     {
-        public Temperatures Main { get; set; }
-
         public string Name { get; set; }
-
-        public DateTime Dt_txt { get; set; }
+        public Coordinates Coord { get; set; }
     }
 }

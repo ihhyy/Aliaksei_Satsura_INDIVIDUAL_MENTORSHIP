@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Interfaces;
 using BL.DTOs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Services
 {
@@ -15,6 +17,23 @@ namespace BL.Services
         {
             _weatherRepositiry = weatherRepository;
             _validator = validator;
+        }
+
+        public async Task<List<WeatherDto>> GetForecastByCityNameAsync(string cityName)
+        {
+            _validator.ValidateInput(cityName);
+
+            var forecast = await _weatherRepositiry.GetWForecastByCityNameAsync(cityName);
+
+            var forecastList = new List<WeatherDto>();
+
+            foreach(var f in forecast.List.Where(x => x.Dt_txt.Hour == 12))
+            {
+                f.Name = forecast.City.Name;
+                forecastList.Add(MapEntityToWeatherDto(f));
+            }
+
+            return forecastList;
         }
 
         public async Task<WeatherDto> GetWeatherByCityNameAsync(string cityName)
@@ -36,9 +55,15 @@ namespace BL.Services
                 weatherDto.IsBadRequest = true;
             }
 
-            else
+            if(weather.Dt_txt == null)
             {
                 weatherDto.Message = SelectMessage(weather.Main.Temp, weather.Name);
+                weatherDto.IsBadRequest = false;
+            }
+
+            else
+            {
+                weatherDto.Message = SelectPrefix(weather.Dt_txt.Day) + SelectMessage(weather.Main.Temp, weather.Name);
                 weatherDto.IsBadRequest = false;
             }
 
@@ -55,6 +80,11 @@ namespace BL.Services
                 return $"In {city} {temp} °C now. Good weather";
             else
                 return $"In {city} {temp} °C now. It's time to go to the beach";
+        }
+
+        private string SelectPrefix(int day)
+        {
+            return $"Day {day}:";
         }
     }
 }

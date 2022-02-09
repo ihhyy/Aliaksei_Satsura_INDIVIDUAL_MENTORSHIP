@@ -13,9 +13,11 @@ namespace ConsoleApp
     class Program
     {
         private static readonly string _key = ConfigurationManager.AppSettings["APIKey"];
-        private static readonly string _API = ConfigurationManager.AppSettings["url"];
+        private static readonly string _currentWeatherUrl = ConfigurationManager.AppSettings["currentWeatherUrl"];
+        private static readonly string _converterUrl = ConfigurationManager.AppSettings["currentWeatherUrl"];
+        private static readonly string _forecastUrl = ConfigurationManager.AppSettings["forecastUrl"];
         private static readonly HttpClient _client = new HttpClient();
-        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _API, _client);
+        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _currentWeatherUrl, _client, _converterUrl, _forecastUrl);
         private static IValidator _validator = new Validator();
         private static IWeatherService _weatherService = new WeatherServices(_weatherRepository, _validator);
 
@@ -31,8 +33,9 @@ namespace ConsoleApp
         private static async Task<bool> MainMenu()
         {
             Console.WriteLine("Chose an option:");
-            Console.WriteLine("1. Enter city name");
-            Console.WriteLine("2. Exit");
+            Console.WriteLine("1. Get current weather");
+            Console.WriteLine("2. Get weather forecast");
+            Console.WriteLine("3. Exit");
 
             switch (Console.ReadLine())
             {
@@ -40,6 +43,9 @@ namespace ConsoleApp
                     await GetWeatherByCityNameAsync();
                     return true;
                 case "2":
+                    await GetForecastByCityNameAsync();
+                    return true;
+                case "3":
                     Console.WriteLine("Exit");
                     return false;
                 default:
@@ -57,6 +63,30 @@ namespace ConsoleApp
             {
                 var weather = await _weatherService.GetWeatherByCityNameAsync(cityName);
                 Console.WriteLine(weather.Message);
+            }
+
+            catch (EmptyInputException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            catch (Exception)
+            {
+                Console.WriteLine("Server error");
+            }
+        }
+
+        private static async Task GetForecastByCityNameAsync()
+        {
+            Console.WriteLine("Getting forecast by city name");
+            Console.WriteLine("Enter city name");
+            var cityName = Console.ReadLine();
+
+            try
+            {
+                var weather = await _weatherService.GetForecastByCityNameAsync(cityName);
+                foreach(var w in weather)
+                    Console.WriteLine(w.Message);
             }
 
             catch (EmptyInputException ex)

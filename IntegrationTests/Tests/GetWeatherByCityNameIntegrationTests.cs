@@ -20,15 +20,19 @@ namespace IntegrationTest.Tests
         private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
         private readonly string _key;
-        private readonly string _API;
+        private readonly string _currentWeatherUrl;
+        private readonly string _converterUrl;
+        private readonly string _forecastrUrl;
 
         public GetWeatherByCityNameIntegrationTests()
         {
             _config = new TestConfig().InitConfiguration();
             _key = _config["APIkey"];
-            _API = _config["url"];
+            _currentWeatherUrl = _config["currentWeatherUrl"];
+            _converterUrl = _config["converterUrl"];
+            _forecastrUrl = _config["forecastUrl"];
             _client = new HttpClient();
-            _weatherRepository = new WeatherRepository(_key, _API, _client);
+            _weatherRepository = new WeatherRepository(_key, _currentWeatherUrl, _client, _converterUrl, _forecastrUrl);
             _validator = new Validator();
             _weatherService = new WeatherServices(_weatherRepository, _validator);
         }
