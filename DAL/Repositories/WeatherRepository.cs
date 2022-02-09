@@ -47,6 +47,7 @@ namespace DAL.Repositories
             var response = await _client.GetAsync($"{_converterUrl}q={cityName}&appid={_key}");
             var responseBody = await response.Content.ReadAsStringAsync();
             var cityCoordinates = JsonConvert.DeserializeObject<CityCoordinates>(responseBody);
+
             return cityCoordinates;
         }
     }
