@@ -1,4 +1,5 @@
-﻿using BL.CustomExceptions;
+﻿
+using BL.CustomExceptions;
 using BL.Interfaces;
 using BL.Services;
 using DAL.Interfaces;
@@ -21,8 +22,6 @@ namespace IntegrationTest.Tests
 
         public BasicTests()
         {
-            //_key = ConfigurationManager.AppSettings["APIKey"];
-            //_API = ConfigurationManager.AppSettings["url"];
             var _key = "2a1e352deac76c1b856f00075b07cd74";
             var _API = "https://api.openweathermap.org/data/2.5/weather?";
             _client = new HttpClient();
