@@ -1,11 +1,9 @@
-﻿
-using BL.CustomExceptions;
+﻿using BL.CustomExceptions;
 using BL.Interfaces;
 using BL.Services;
 using DAL.Interfaces;
 using DAL.Repositories;
-using System;
-using System.Configuration;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,17 +11,29 @@ using Xunit;
 
 namespace IntegrationTest.Tests
 {
-    public class BasicTests
+    public class GetWeatherByCityNameIntegrationTests
     {
+        private readonly IConfiguration _config;
+        private readonly string _key;
+        private readonly string _API;
         private readonly HttpClient _client;
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
 
-        public BasicTests()
+        public static IConfiguration InitConfiguration()
         {
-            var _key = "2a1e352deac76c1b856f00075b07cd74";
-            var _API = "https://api.openweathermap.org/data/2.5/weather?";
+            var config = new ConfigurationBuilder()
+               .AddJsonFile("testsettings.json")
+                .Build();
+            return config;
+        }
+
+        public GetWeatherByCityNameIntegrationTests()
+        {
+            _config = InitConfiguration();
+            _key = _config["APIkey"];
+            _API = _config["url"];
             _client = new HttpClient();
             _weatherRepository = new WeatherRepository(_key, _API, _client);
             _validator = new Validator();
