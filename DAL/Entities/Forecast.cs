@@ -9,5 +9,7 @@ namespace DAL.Entities
         public List<Weather> List { get; set; }
 
         public City City { get; set; }
+
+        public bool IsBadRequest { get; set; }
     }
 }

@@ -19,21 +19,27 @@ namespace BL.Services
             _validator = validator;
         }
 
-        public async Task<List<WeatherDto>> GetForecastByCityNameAsync(string cityName)
+        public async Task<List<WeatherDto>> GetForecastByCityNameAsync(string cityName, int days)
         {
             _validator.ValidateInput(cityName);
 
-            var forecast = await _weatherRepositiry.GetWForecastByCityNameAsync(cityName);
+            var forecast = await _weatherRepositiry.GetWForecastByCityNameAsync(cityName, days);
+
+            if (forecast.IsBadRequest == true)
+                return new List<WeatherDto>()
+                { 
+                    new WeatherDto {IsBadRequest = true, Message = "City not found or input was incorrect"}
+                };
 
             var forecastList = new List<WeatherDto>();
 
-            foreach(var f in forecast.List.Where(x => x.Dt_txt.Hour == 12))
+            foreach (var f in forecast.List.Where(x => x.Dt_txt.Hour == 12))
             {
                 f.Name = forecast.City.Name;
                 forecastList.Add(MapEntityToWeatherDto(f));
             }
 
-            return forecastList;
+            return forecastList.GetRange(0, days);
         }
 
         public async Task<WeatherDto> GetWeatherByCityNameAsync(string cityName)

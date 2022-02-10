@@ -7,6 +7,6 @@ namespace DAL.Interfaces
     {
         Task<Weather> GetWeatherByCityNameAsync(string cityName);
 
-        Task<Forecast> GetWForecastByCityNameAsync(string cityName);
+        Task<Forecast> GetWForecastByCityNameAsync(string cityName, int days);
     }
 }

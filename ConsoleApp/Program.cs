@@ -81,10 +81,12 @@ namespace ConsoleApp
             Console.WriteLine("Getting forecast by city name");
             Console.WriteLine("Enter city name");
             var cityName = Console.ReadLine();
+            Console.WriteLine("How many days do you want to see");
+            var days = Console.ReadLine();
 
             try
             {
-                var weather = await _weatherService.GetForecastByCityNameAsync(cityName);
+                var weather = await _weatherService.GetForecastByCityNameAsync(cityName, Int32.Parse(days));
                 foreach(var w in weather)
                     Console.WriteLine(w.Message);
             }

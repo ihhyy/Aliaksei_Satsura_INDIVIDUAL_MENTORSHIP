@@ -32,12 +32,24 @@ namespace DAL.Repositories
             return weather;
         }
 
-        public async Task<Forecast> GetWForecastByCityNameAsync(string cityName)
+        public async Task<Forecast> GetWForecastByCityNameAsync(string cityName, int days)
         {
             var cityCoord = await GetCoordinatesByCityName(cityName);
+            var weatherForecast = new Forecast();
+
+            if(cityCoord.Coord == null)
+            {
+                weatherForecast.IsBadRequest = true;
+                return weatherForecast;
+            }
+            else
+            {
+                weatherForecast.IsBadRequest = false;
+            }
+
             var response = await _client.GetAsync($"{_forecastUrl}lat={cityCoord.Coord.Lat}&lon={cityCoord.Coord.Lon}&appid={_key}&units=metric");
             var responseBody = await response.Content.ReadAsStringAsync();
-            var weatherForecast = JsonConvert.DeserializeObject<Forecast>(responseBody);
+            weatherForecast = JsonConvert.DeserializeObject<Forecast>(responseBody);
 
             return weatherForecast;
         }
