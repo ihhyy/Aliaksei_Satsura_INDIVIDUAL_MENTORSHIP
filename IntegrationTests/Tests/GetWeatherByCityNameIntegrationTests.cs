@@ -33,7 +33,7 @@ namespace IntegrationTest.Tests
             _forecastrUrl = _config["forecastUrl"];
             _client = new HttpClient();
             _weatherRepository = new WeatherRepository(_key, _currentWeatherUrl, _client, _converterUrl, _forecastrUrl);
-            _validator = new Validator();
+            _validator = new WeatherInputValidator();
             _weatherService = new WeatherServices(_weatherRepository, _validator);
         }
 

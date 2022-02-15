@@ -11,16 +11,16 @@ namespace DAL.Repositories
         private readonly HttpClient _client;
         private readonly string _currentWeatherUrl;
         private readonly string _key;
-        private readonly string _converterUrl;
+        private readonly string _coordinatesUrl;
         private readonly string _forecastUrl;
 
-        public WeatherRepository(string key, string currentWeatherUrl, HttpClient client, string converterUrl, string forecastUrl)
+        public WeatherRepository(string key, string coorinatesUrl, string forecastUrl, string currentWeatherUrl, HttpClient client)
         {
             _client = client;
-            _currentWeatherUrl = currentWeatherUrl;
             _key = key;
-            _converterUrl = converterUrl;
+            _coordinatesUrl = coorinatesUrl;
             _forecastUrl = forecastUrl;
+            _currentWeatherUrl = currentWeatherUrl;
         }
 
         public async Task<Weather> GetWeatherByCityNameAsync(string cityName)
@@ -32,7 +32,7 @@ namespace DAL.Repositories
             return weather;
         }
 
-        public async Task<Forecast> GetWForecastByCityNameAsync(string cityName, int days)
+        public async Task<Forecast> GetForecastByCityNameAsync(string cityName)
         {
             var cityCoord = await GetCoordinatesByCityName(cityName);
             var weatherForecast = new Forecast();
@@ -56,7 +56,7 @@ namespace DAL.Repositories
 
         private async Task<CityCoordinates> GetCoordinatesByCityName(string cityName)
         {
-            var response = await _client.GetAsync($"{_converterUrl}q={cityName}&appid={_key}");
+            var response = await _client.GetAsync($"{_coordinatesUrl}q={cityName}&appid={_key}");
             var responseBody = await response.Content.ReadAsStringAsync();
             var cityCoordinates = JsonConvert.DeserializeObject<CityCoordinates>(responseBody);
 

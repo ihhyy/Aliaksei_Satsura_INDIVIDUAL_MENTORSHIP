@@ -1,6 +1,6 @@
 {
   "APIkey": "2a1e352deac76c1b856f00075b07cd74",
-  "currentWeatherUrl": "https://api.openweathermap.org/data/2.5/weather?",
   "converterUrl": "http://api.openweathermap.org/geo/1.0/direct?",
+  "currentWeatherUrl": "https://api.openweathermap.org/data/2.5/weather?",
   "forecastUrl": "http://api.openweathermap.org/data/2.5/forecast?"
 }

@@ -101,9 +101,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppConfig\AppConfig.csproj">
+      <Project>{51372e77-c7d0-4f13-a543-0d232324e1ae}</Project>
+      <Name>AppConfig</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BL\BL.csproj">
       <Project>{f5cde62b-3dc9-4972-9d0f-22a4b8f30597}</Project>
       <Name>BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Command\Command.csproj">
+      <Project>{D6E906FC-6D08-4169-8B6D-B89723547E3F}</Project>
+      <Name>Command</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{bd431875-7c51-41d1-82b8-8ea7a257bd74}</Project>

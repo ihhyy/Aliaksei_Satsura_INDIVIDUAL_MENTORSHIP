@@ -12,7 +12,7 @@ namespace Tests.Services
 
         public ValidatorTest()
         {
-            _validator = new Validator();
+            _validator = new WeatherInputValidator();
         }
 
         [Theory]
@@ -23,7 +23,7 @@ namespace Tests.Services
             //Arrange
 
             //Act
-            Action result = () => _validator.ValidateInput(input);
+            Action result = () => _validator.ValidateStringInput(input);
 
             //Assert
             var exception = Assert.Throws<EmptyInputException>(result);
@@ -37,7 +37,7 @@ namespace Tests.Services
             var input = "string";
 
             //Act
-            var exception = Record.Exception(() => _validator.ValidateInput(input));
+            var exception = Record.Exception(() => _validator.ValidateStringInput(input));
 
             //Assert
             Assert.Null(exception);
