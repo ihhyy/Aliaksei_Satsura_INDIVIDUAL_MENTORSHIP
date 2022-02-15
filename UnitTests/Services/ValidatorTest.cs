@@ -9,10 +9,12 @@ namespace Tests.Services
     public class ValidatorTest
     {
         private readonly IValidator _validator;
+        private readonly int _min = 1;
+        private readonly int _max = 5;
 
         public ValidatorTest()
         {
-            _validator = new WeatherInputValidator();
+            _validator = new WeatherInputValidator(_min, _max);
         }
 
         [Theory]
@@ -23,7 +25,7 @@ namespace Tests.Services
             //Arrange
 
             //Act
-            Action result = () => _validator.ValidateStringInput(input);
+            Action result = () => _validator.ValidateInput(input);
 
             //Assert
             var exception = Assert.Throws<EmptyInputException>(result);
@@ -37,7 +39,7 @@ namespace Tests.Services
             var input = "string";
 
             //Act
-            var exception = Record.Exception(() => _validator.ValidateStringInput(input));
+            var exception = Record.Exception(() => _validator.ValidateInput(input));
 
             //Assert
             Assert.Null(exception);

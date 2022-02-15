@@ -6,13 +6,14 @@ namespace BL.Services
 {
     public class WeatherInputValidator : IValidator
     {
-        private readonly IConfig _config;
+        private readonly int _min;
+        private readonly int _max;
 
-        public WeatherInputValidator(IConfig config)
+        public WeatherInputValidator(int min, int max)
         {
-            _config = config;
+            _min = min;
+            _max = max;
         }
-
 
         public void ValidateInput(string input)
         {
@@ -22,13 +23,10 @@ namespace BL.Services
 
         public void ValidateMultiInput(string input, int days)
         {
-            var min = int.Parse(_config.MinDays);
-            var max = int.Parse(_config.MaxDays);
-
             if (days == 0)
                 throw new EmptyInputException();
 
-            if (days < min || days > max)
+            if (days < _min || days > _max)
                 throw new IncorrectDaysRangeException();
 
 

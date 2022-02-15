@@ -14,11 +14,11 @@ namespace DAL.Repositories
         private readonly string _coordinatesUrl;
         private readonly string _forecastUrl;
 
-        public WeatherRepository(string key, string coorinatesUrl, string forecastUrl, string currentWeatherUrl, HttpClient client)
+        public WeatherRepository(string key, string coordinatesUrl, string forecastUrl, string currentWeatherUrl, HttpClient client)
         {
             _client = client;
             _key = key;
-            _coordinatesUrl = coorinatesUrl;
+            _coordinatesUrl = coordinatesUrl;
             _forecastUrl = forecastUrl;
             _currentWeatherUrl = currentWeatherUrl;
         }

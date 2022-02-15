@@ -4,10 +4,7 @@ using BL.Services;
 using DAL.Entities;
 using DAL.Interfaces;
 using Moq;
-using System;
-using System.Configuration;
 using System.Linq;
-using System.Threading.Tasks;
 using Tests.Fixtures;
 using Xunit;
 
@@ -19,21 +16,22 @@ namespace Tests.Services
         private readonly IWeatherService _weatherService;
         private readonly Mock<IValidator> _repoValidator;
         private readonly Mock<IWeatherRepository> _repoMock;
+        private readonly int _forecastHour = 12;
 
         public WeatherServiceTest()
         {
             _weatherFixture = new WeatherFixture();
             _repoValidator = new Mock<IValidator>();
             _repoMock = new Mock<IWeatherRepository>();
-            _weatherService = new WeatherServices(_repoMock.Object, _repoValidator.Object);
+            _weatherService = new WeatherServices(_repoMock.Object, _repoValidator.Object, _forecastHour);
 
         }
 
         [Theory]
-        [InlineData("Oslo", "In Oslo -3 °C now. Dress warm")]
-        [InlineData("Minsk", "In Minsk 5 °C now. It's fresh")]
-        [InlineData("Canberra", "In Canberra 27 °C now. Good weather")]
-        [InlineData("Cairo", "In Cairo 33 °C now. It's time to go to the beach")]
+        [InlineData("Oslo", "In Oslo -3 °C. Dress warm")]
+        [InlineData("Minsk", "In Minsk 5 °C. It's fresh")]
+        [InlineData("Canberra", "In Canberra 27 °C. Good weather")]
+        [InlineData("Cairo", "In Cairo 33 °C. It's time to go to the beach")]
         public async void GetWeatherAsync_CorrectInput_ReturnMessageWithData(string cityName, string message)
         {
             //Arrange
