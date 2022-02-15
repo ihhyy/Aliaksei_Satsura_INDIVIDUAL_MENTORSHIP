@@ -26,7 +26,7 @@ namespace BL.Services
 
             var forecast = await _weatherRepositiry.GetForecastByCityNameAsync(cityName);
 
-            if (forecast.IsBadRequest == true)
+            if (forecast.IsBadRequest)
                 return "City not found or input was incorrect";
 
             var forecastList = forecast.List.Where(x => x.Date.Hour == _forecastHour)
