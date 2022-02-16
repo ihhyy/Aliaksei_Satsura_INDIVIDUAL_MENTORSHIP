@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace BL.Interfaces
+﻿namespace BL.Interfaces
 {
     public interface IValidator
     {
