@@ -84,6 +84,7 @@ namespace Tests.Services
         [InlineData("Oslo", 5)]
         public async void GetForecastAsync_CorrectInput_ReturnMessageWithData(string cityName, int days)
         {
+            //Arrange
             var expected = _forecastFixture.GetWeather();
             var expectedMessage =
                 $"Day 1: In {cityName} -10 °C. Dress warm" + "\n" +
@@ -93,8 +94,10 @@ namespace Tests.Services
                 $"Day 5: In { cityName} 33 °C. It's time to go to the beach" + "\n";
             _repoMock.Setup(x => x.GetForecastByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
+            //Act
             var forecast = await _weatherService.GetForecastByCityNameAsync(cityName, days);
 
+            //Assert
             Assert.Equal(forecast, expectedMessage);
             Assert.False(expected.IsBadRequest);
         }
