@@ -29,7 +29,6 @@ namespace BL.Services
             if (days < _min || days > _max)
                 throw new IncorrectDaysRangeException();
 
-
             this.ValidateInput(input);
         }
     }

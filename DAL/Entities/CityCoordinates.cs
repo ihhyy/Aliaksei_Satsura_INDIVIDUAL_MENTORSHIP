@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,9 @@ namespace DAL.Entities
 {
     public class CityCoordinates
     {
-        public string Name { get; set; }
-        public Coordinates Coord { get; set; }
+        [JsonProperty("lat")]
+        public double Lat { get; set; }
+        [JsonProperty("lon")]
+        public double Lon { get; set; }
     }
 }

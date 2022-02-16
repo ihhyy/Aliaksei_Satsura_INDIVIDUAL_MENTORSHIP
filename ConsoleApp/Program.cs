@@ -61,9 +61,9 @@ namespace ConsoleApp
                 Console.WriteLine("Incorrect menu input");
             }
 
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Server error");
+                Console.WriteLine(ex.Message);
             }
 
             return true;

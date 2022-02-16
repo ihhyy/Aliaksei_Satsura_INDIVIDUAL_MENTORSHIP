@@ -1,6 +1,7 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace DAL.Repositories
             var cityCoord = await GetCoordinatesByCityName(cityName);
             var weatherForecast = new Forecast();
 
-            if(cityCoord.Coord == null)
+            if(cityCoord == null)
             {
                 weatherForecast.IsBadRequest = true;
                 return weatherForecast;
@@ -47,7 +48,7 @@ namespace DAL.Repositories
                 weatherForecast.IsBadRequest = false;
             }
 
-            var response = await _client.GetAsync($"{_forecastUrl}lat={cityCoord.Coord.Lat}&lon={cityCoord.Coord.Lon}&appid={_key}&units=metric");
+            var response = await _client.GetAsync($"{_forecastUrl}lat={cityCoord.Lat}&lon={cityCoord.Lon}&appid={_key}&units=metric");
             var responseBody = await response.Content.ReadAsStringAsync();
             weatherForecast = JsonConvert.DeserializeObject<Forecast>(responseBody);
 
@@ -58,7 +59,8 @@ namespace DAL.Repositories
         {
             var response = await _client.GetAsync($"{_coordinatesUrl}q={cityName}&appid={_key}");
             var responseBody = await response.Content.ReadAsStringAsync();
-            var cityCoordinates = JsonConvert.DeserializeObject<CityCoordinates>(responseBody);
+
+            var cityCoordinates = JsonConvert.DeserializeObject<List<CityCoordinates>>(responseBody)[0];
 
             return cityCoordinates;
         }
