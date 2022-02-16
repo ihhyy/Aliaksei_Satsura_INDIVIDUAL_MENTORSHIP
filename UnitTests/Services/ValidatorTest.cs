@@ -44,5 +44,51 @@ namespace Tests.Services
             //Assert
             Assert.Null(exception);
         }
+
+        [Theory]
+        [InlineData("", 1)]
+        [InlineData("string", 0)]
+        [InlineData(null, 0)]
+        public void ValidateMultiInput_IncorrectInput_ThrowEmptyInputException(string input1, int input2)
+        {
+            //Arrange
+
+            //Act
+            Action result = () => _validator.ValidateMultiInput(input1, input2);
+
+            //Assert
+            var exception = Assert.Throws<EmptyInputException>(result);
+            Assert.Equal("Empty input field", exception.Message);
+        }
+
+        [Theory]
+        [InlineData("", 6)]
+        [InlineData("string", 100)]
+        [InlineData(null, 500)]
+        public void ValidateMultiInput_IncorrectInput_ThrowIncorrectDaysException(string input1, int input2)
+        {
+            //Arrange
+
+            //Act
+            Action result = () => _validator.ValidateMultiInput(input1, input2);
+
+            //Assert
+            var exception = Assert.Throws<IncorrectDaysRangeException>(result);
+            Assert.Equal("Incorrect days input", exception.Message);
+        }
+
+        [Fact]
+        public void ValidateMultiInput_CorrectInput_PassSuccessfully()
+        {
+            //Arrange
+            var input1 = "string";
+            var input2 = 5;
+
+            //Act
+            var exception = Record.Exception(() => _validator.ValidateMultiInput(input1, input2));
+
+            //Assert
+            Assert.Null(exception);
+        }
     }
 }

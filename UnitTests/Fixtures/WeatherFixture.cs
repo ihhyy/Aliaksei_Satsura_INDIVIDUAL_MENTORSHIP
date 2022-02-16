@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tests.Fixtures
+namespace UnitTests.Fixtures
 {
     public class WeatherFixture
     {
