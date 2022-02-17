@@ -36,7 +36,7 @@ namespace BL.Services
 
             for(int i = 0; i < days; i++)
             {
-                fullMessage += SelectPrefix(i) + forecastList[i].Message + "\n";
+                fullMessage += $"{SelectPrefix(i)} {forecastList[i].Message} \n";
             }
 
             return fullMessage;

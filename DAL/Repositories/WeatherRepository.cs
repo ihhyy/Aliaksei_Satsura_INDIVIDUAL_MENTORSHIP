@@ -43,10 +43,6 @@ namespace DAL.Repositories
                 weatherForecast.IsBadRequest = true;
                 return weatherForecast;
             }
-            else
-            {
-                weatherForecast.IsBadRequest = false;
-            }
 
             var response = await _client.GetAsync($"{_forecastUrl}lat={cityCoord.Lat}&lon={cityCoord.Lon}&appid={_key}&units=metric");
             var responseBody = await response.Content.ReadAsStringAsync();

@@ -1,6 +1,5 @@
 ﻿using BL.Interfaces;
 using BL.CustomExceptions;
-using AppConfig.Interfaces;
 
 namespace BL.Services
 {
@@ -23,13 +22,10 @@ namespace BL.Services
 
         public void ValidateMultiInput(string input, int days)
         {
-            if (days == 0)
-                throw new EmptyInputException();
-
             if (days < _min || days > _max)
                 throw new IncorrectDaysRangeException();
 
-            this.ValidateInput(input);
+            ValidateInput(input);
         }
     }
 }

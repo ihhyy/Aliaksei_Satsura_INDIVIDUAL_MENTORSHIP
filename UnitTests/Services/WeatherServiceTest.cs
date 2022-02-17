@@ -87,11 +87,11 @@ namespace Tests.Services
             //Arrange
             var expected = _forecastFixture.GetWeather();
             var expectedMessage =
-                $"Day 1: In {cityName} -10 °C. Dress warm" + "\n" +
-                $"Day 2: In {cityName} -3 °C. Dress warm" + "\n" +
-                $"Day 3: In { cityName} 5 °C. It's fresh" + "\n" +
-                $"Day 4: In { cityName} 27 °C. Good weather" + "\n" +
-                $"Day 5: In { cityName} 33 °C. It's time to go to the beach" + "\n";
+                $"Day 1:  In {cityName} -10 °C. Dress warm \n"+
+                $"Day 2:  In {cityName} -3 °C. Dress warm \n"+
+                $"Day 3:  In { cityName} 5 °C. It's fresh \n"+
+                $"Day 4:  In { cityName} 27 °C. Good weather \n"+
+                $"Day 5:  In { cityName} 33 °C. It's time to go to the beach \n";
             _repoMock.Setup(x => x.GetForecastByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
 
             //Act

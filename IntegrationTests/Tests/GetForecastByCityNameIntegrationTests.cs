@@ -76,8 +76,6 @@ namespace IntegrationTests.Tests
 
         [Theory]
         [InlineData("", 5)]
-        [InlineData("", 0)]
-        [InlineData("Oslo", 0)]
         public async Task GetForecastAsync_EmptyStringInput_ReturnExceptionAsync(string input, int days)
         {
             //Arrange

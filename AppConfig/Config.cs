@@ -7,26 +7,13 @@ namespace AppConfig
     public class Config : IConfig
     {
         public readonly NameValueCollection Configuration;
-        //public string Key => ConfigurationManager.AppSettings["APIKey"];
-
-        //public string CurrentWeatherUrl => ConfigurationManager.AppSettings["currentWeatherUrl"];
-
-        //public string CoordinatesUrl => ConfigurationManager.AppSettings["coordinatesUrl"];
-
-        //public string ForecastUrl => ConfigurationManager.AppSettings["forecastUrl"];
-
-        //public string ForecastHour => ConfigurationManager.AppSettings["forecastHour"];
-
-        //public string MinDays => ConfigurationManager.AppSettings["minForecastDays"];
-
-        //public string MaxDays => ConfigurationManager.AppSettings["maxForecastDays"];
         public string Key { get; set; }
         public string CurrentWeatherUrl { get; set; }
         public string CoordinatesUrl { get; set; }
         public string ForecastUrl { get; set; }
-        public string ForecastHour { get; set; }
-        public string MinDays { get; set; }
-        public string MaxDays { get; set; }
+        public int ForecastHour { get; set; }
+        public int MinDays { get; set; }
+        public int MaxDays { get; set; }
 
         public Config()
         {
@@ -36,9 +23,9 @@ namespace AppConfig
             CurrentWeatherUrl = configuration["currentWeatherUrl"];
             CoordinatesUrl = configuration["coordinatesUrl"];
             ForecastUrl = configuration["forecastUrl"];
-            ForecastHour = configuration["forecastHour"];
-            MinDays = configuration["minForecastDays"];
-            MaxDays = configuration["maxForecastDays"];
+            ForecastHour = int.Parse(configuration["forecastHour"]);
+            MinDays = int.Parse(configuration["minForecastDays"]);
+            MaxDays = int.Parse(configuration["maxForecastDays"]);
         }
 
     }

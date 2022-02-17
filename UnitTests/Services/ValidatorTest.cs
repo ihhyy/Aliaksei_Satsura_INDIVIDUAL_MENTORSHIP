@@ -45,21 +45,21 @@ namespace Tests.Services
             Assert.Null(exception);
         }
 
-        [Theory]
-        [InlineData("", 1)]
-        [InlineData("string", 0)]
-        [InlineData(null, 0)]
-        public void ValidateMultiInput_IncorrectInput_ThrowEmptyInputException(string input1, int input2)
-        {
-            //Arrange
+        //[Theory]
+        //[InlineData("", 1)]
+        //[InlineData("string", 0)]
+        //[InlineData(null, 0)]
+        //public void ValidateMultiInput_IncorrectInput_ThrowEmptyInputException(string input1, int input2)
+        //{
+        //    //Arrange
 
-            //Act
-            Action result = () => _validator.ValidateMultiInput(input1, input2);
+        //    //Act
+        //    Action result = () => _validator.ValidateMultiInput(input1, input2);
 
-            //Assert
-            var exception = Assert.Throws<EmptyInputException>(result);
-            Assert.Equal("Empty input field", exception.Message);
-        }
+        //    //Assert
+        //    var exception = Assert.Throws<EmptyInputException>(result);
+        //    Assert.Equal("Empty input field", exception.Message);
+        //}
 
         [Theory]
         [InlineData("", 6)]

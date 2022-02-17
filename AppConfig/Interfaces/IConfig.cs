@@ -10,10 +10,10 @@
 
         string ForecastUrl { get; }
 
-        string ForecastHour { get; }
+        int ForecastHour { get; }
 
-        string MinDays { get; }
+        int MinDays { get; }
 
-        string MaxDays { get; }
+        int MaxDays { get; }
     }
 }

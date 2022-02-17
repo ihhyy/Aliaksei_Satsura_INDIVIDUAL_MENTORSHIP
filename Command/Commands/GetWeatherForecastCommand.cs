@@ -1,48 +1,20 @@
-﻿using AppConfig;
-using AppConfig.Interfaces;
-using BL.CustomExceptions;
+﻿using BL.CustomExceptions;
 using BL.Interfaces;
-using BL.Services;
 using Command.Interfaces;
-using DAL.Interfaces;
-using DAL.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Command.Commands
 {
     public class GetWeatherForecastCommand : ICommand
     {
-        private static IConfig _config = new Config();
-        private readonly int _min;
-        private readonly int _max;
-        private static readonly HttpClient _client = new HttpClient();
-        private readonly string _key;
-        private readonly int _forecastHour;
-        private readonly string _forecastUrl;
-        private readonly string _coordinatesUrl;
-        private readonly string _currentWeatherUrl;
         private IWeatherService _weatherService;
-        private IWeatherRepository _weatherRepository;
-        private IValidator _validator;
 
         public string Text => ": Get weather forecast";
 
-        public GetWeatherForecastCommand()
+        public GetWeatherForecastCommand(IWeatherService weatherService)
         {
-            _key = _config.Key;
-            _max = int.Parse(_config.MaxDays);
-            _min = int.Parse(_config.MinDays);
-            _coordinatesUrl = _config.CoordinatesUrl;
-            _forecastUrl = _config.ForecastUrl;
-            _forecastHour = int.Parse(_config.ForecastHour);
-            _currentWeatherUrl = _config.CurrentWeatherUrl;
-            _validator = new WeatherInputValidator(_min, _max);
-            _weatherRepository = new WeatherRepository(_key, _coordinatesUrl, _forecastUrl, _currentWeatherUrl, _client);
-            _weatherService = new WeatherServices(_weatherRepository, _validator, _forecastHour);
+            _weatherService = weatherService;
         }
 
         public async Task Execute()
@@ -51,8 +23,12 @@ namespace Command.Commands
             Console.WriteLine("Enter city name");
             var cityName = Console.ReadLine();
             Console.WriteLine("How many days do you want to see");
-            var days = Console.ReadLine();
-            var weather = await _weatherService.GetForecastByCityNameAsync(cityName, Int32.Parse(days));
+            var daysNumber = int.TryParse(Console.ReadLine(), out var days);
+
+            if (!daysNumber)
+                throw new IncorrectDaysRangeException();
+
+            var weather = await _weatherService.GetForecastByCityNameAsync(cityName, days);
             Console.WriteLine(weather);
         }
     }
