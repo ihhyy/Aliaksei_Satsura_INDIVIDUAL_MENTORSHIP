@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppConfig\AppConfig.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
 	<ProjectConfiguration Include="..\ConsoleApp\App.config" />
   </ItemGroup>

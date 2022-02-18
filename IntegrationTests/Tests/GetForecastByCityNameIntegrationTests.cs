@@ -10,9 +10,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace IntegrationTest.Tests
+namespace IntegrationTests.Tests
 {
-    public class GetWeatherByCityNameIntegrationTests
+    public class GetForecastByCityNameIntegrationTests
     {
         private readonly HttpClient _client;
         private readonly IConfiguration _config;
@@ -27,7 +27,7 @@ namespace IntegrationTest.Tests
         private readonly int _max;
         private readonly int _forecastHour;
 
-        public GetWeatherByCityNameIntegrationTests()
+        public GetForecastByCityNameIntegrationTests()
         {
             _config = new TestConfig().InitConfiguration();
             _key = _config["APIkey"];
@@ -44,12 +44,12 @@ namespace IntegrationTest.Tests
         }
 
         [Theory]
-        [InlineData("Minsk")]
-        [InlineData("oslo")]
-        [InlineData("LONDON")]
-        [InlineData("ToKyO")]
-        [InlineData("Toronto")]
-        public async void GetWeatherAsync_CorrectInput_ReturnMessageWithData(string input)
+        [InlineData("Oslo", 5)]
+        [InlineData("Minsk", 4)]
+        [InlineData("London", 3)]
+        [InlineData("Cairo", 2)]
+        [InlineData("Canberra", 1)]
+        public async void GetForecastAsync_CorrectInput_ReturnMessageWithData(string input, int days)
         {
             //Arrange
             var appendix1 = " Dress warm";
@@ -57,7 +57,12 @@ namespace IntegrationTest.Tests
             var appendix3 = " Good weather";
             var appendix4 = " It's time to go to the beach";
             var regex = new Regex(@".?\d+.\d+");
-            var message = $"In city {input} {regex} °C now.{appendix1} || {appendix2} || {appendix3} || {appendix4}";
+            var message = string.Empty;
+
+            for(int i = 0; i < days; i++)
+            {
+                message = $"Day {i+1}. In city {input} {regex} °C now.{appendix1} || {appendix2} || {appendix3} || {appendix4}";
+            }
 
             //Act
             var output = await _weatherService.GetWeatherByCityNameAsync(input);
@@ -69,22 +74,22 @@ namespace IntegrationTest.Tests
             Assert.False(output.IsBadRequest);
         }
 
-        [Fact]
-        public async Task GetWeatherAsync_EmptyInput_ReturnExceptionAsync()
+        [Theory]
+        [InlineData("", 5)]
+        public async Task GetForecastAsync_EmptyStringInput_ReturnExceptionAsync(string input, int days)
         {
             //Arrange
-            var input = string.Empty;
             var message = "Empty input field";
 
             //Act
-            var output = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetWeatherByCityNameAsync(input));
+            var output = await Assert.ThrowsAsync<EmptyInputException>(() => _weatherService.GetForecastByCityNameAsync(input, days));
 
             //Assert
             Assert.Equal(message, output.Message);
         }
 
         [Fact]
-        public async void GetWeatherAsync_IncorrectInput_ReturnMessageWithoutDataAsync()
+        public async Task GetForecastAsync_IncorrectInput_ReturnExceptionAsync()
         {
             //Arrange
             var input = "Incorrect_input";

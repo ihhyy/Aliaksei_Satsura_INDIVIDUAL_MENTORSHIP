@@ -1,9 +1,7 @@
 ﻿using DAL.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Tests.Fixtures
+namespace UnitTests.Fixtures
 {
     public class WeatherFixture
     {
@@ -16,36 +14,31 @@ namespace Tests.Fixtures
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = -3 },
-                    Name = "Oslo",
-                    Code = 200
+                    Name = "Oslo"
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 5 },
-                    Name = "Minsk",
-                    Code = 200
+                    Name = "Minsk"
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 27 },
-                    Name = "Canberra",
-                    Code = 200
+                    Name = "Canberra"
                 },
 
                 new Weather()
                 {
                     Main = new Temperatures(){ Temp = 33 },
-                    Name = "Cairo",
-                    Code = 200
+                    Name = "Cairo"
                 },
 
                 new Weather()
                 {
                     Main = null,
-                    Name = "Incorrect_case",
-                    Code = 404
+                    Name = "Incorrect_case"
                 },
             };
         }

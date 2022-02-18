@@ -1,73 +1,81 @@
 ﻿using System;
-using System.Configuration;
-using System.Net.Http;
 using System.Threading.Tasks;
-using BL.CustomExceptions;
+using System.Collections.Generic;
+using Command.Interfaces;
+using Command.Commands;
+using System.Net.Http;
 using BL.Interfaces;
-using BL.Services;
 using DAL.Interfaces;
+using AppConfig.Interfaces;
+using AppConfig;
+using BL.Services;
 using DAL.Repositories;
 
 namespace ConsoleApp
 {
     class Program
     {
-        private static readonly string _key = ConfigurationManager.AppSettings["APIKey"];
-        private static readonly string _API = ConfigurationManager.AppSettings["url"];
-        private static readonly HttpClient _client = new HttpClient();
-        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _API, _client);
-        private static IValidator _validator = new Validator();
-        private static IWeatherService _weatherService = new WeatherServices(_weatherRepository, _validator);
+        private readonly static IConfig _config = new Config();
+        private readonly static int _min = _config.MinDays;
+        private readonly static int _max = _config.MaxDays;
+        private readonly static HttpClient _client = new HttpClient();
+        private readonly static string _key = _config.Key;
+        private readonly static string _currentWeatherUrl = _config.CurrentWeatherUrl;
+        private readonly static string _forecastUrl = _config.ForecastUrl;
+        private readonly static int _forecastHour = _config.ForecastHour;
+        private readonly static string _coordinatesUrl = _config.CoordinatesUrl;
+        private static IValidator _validator = new WeatherInputValidator(_min, _max);
+        private static IWeatherRepository _weatherRepository = new WeatherRepository(_key, _coordinatesUrl, _forecastUrl, _currentWeatherUrl, _client);
+        private static IWeatherService _weatherService = new WeatherServices(_weatherRepository, _validator, _forecastHour);
 
         static async Task Main(string[] args)
         {
-            bool showMenu = true;
+            var showMenu = true;
+            var exitCommand = new ExitCommand();
+            var currentWeatherCommand = new GetCurrentWeatherCommand(_weatherService);
+            var forecastCommand = new GetWeatherForecastCommand(_weatherService);
+
+            var list = new List<ICommand>() 
+            {
+                exitCommand, currentWeatherCommand, forecastCommand
+            };
+
             while (showMenu)
             {
-                showMenu = await MainMenu();
+                showMenu = await DisplayMainMenu(list);
             }
         }
 
-        private static async Task<bool> MainMenu()
+        private static async Task<bool> DisplayMainMenu(List<ICommand> list)
         {
-            Console.WriteLine("Chose an option:");
-            Console.WriteLine("1. Enter city name");
-            Console.WriteLine("2. Exit");
-
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    await GetWeatherByCityNameAsync();
-                    return true;
-                case "2":
-                    Console.WriteLine("Exit");
-                    return false;
-                default:
-                    return true;
-            }
-        }
-
-        private static async Task GetWeatherByCityNameAsync()
-        {
-            Console.WriteLine("Getting weather by city name");
-            Console.WriteLine("Enter city name");
-            var cityName = Console.ReadLine();
-
             try
             {
-                var weather = await _weatherService.GetWeatherByCityNameAsync(cityName);
-                Console.WriteLine(weather.Message);
+                Console.WriteLine("Chose an option:");
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    Console.WriteLine(i + list[i].Text);
+                }
+
+                var selectedNumber = int.TryParse(Console.ReadLine(), out var number);
+
+                if (!selectedNumber)
+                    return true;
+                
+                await list[number].Execute();
             }
 
-            catch (EmptyInputException ex)
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Incorrect menu input");
+            }
+
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            catch (Exception)
-            {
-                Console.WriteLine("Server error");
-            }
+            return true;
         }
     }
 }

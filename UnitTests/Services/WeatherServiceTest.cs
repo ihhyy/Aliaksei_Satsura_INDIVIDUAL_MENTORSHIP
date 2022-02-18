@@ -4,11 +4,8 @@ using BL.Services;
 using DAL.Entities;
 using DAL.Interfaces;
 using Moq;
-using System;
-using System.Configuration;
 using System.Linq;
-using System.Threading.Tasks;
-using Tests.Fixtures;
+using UnitTests.Fixtures;
 using Xunit;
 
 namespace Tests.Services
@@ -16,24 +13,27 @@ namespace Tests.Services
     public class WeatherServiceTest
     {
         private readonly WeatherFixture _weatherFixture;
+        private readonly ForecastFixture _forecastFixture;
         private readonly IWeatherService _weatherService;
         private readonly Mock<IValidator> _repoValidator;
         private readonly Mock<IWeatherRepository> _repoMock;
+        private readonly int _forecastHour = 12;
 
         public WeatherServiceTest()
         {
             _weatherFixture = new WeatherFixture();
+            _forecastFixture = new ForecastFixture();
             _repoValidator = new Mock<IValidator>();
             _repoMock = new Mock<IWeatherRepository>();
-            _weatherService = new WeatherServices(_repoMock.Object, _repoValidator.Object);
+            _weatherService = new WeatherServices(_repoMock.Object, _repoValidator.Object, _forecastHour);
 
         }
 
         [Theory]
-        [InlineData("Oslo", "In Oslo -3 °C now. Dress warm")]
-        [InlineData("Minsk", "In Minsk 5 °C now. It's fresh")]
-        [InlineData("Canberra", "In Canberra 27 °C now. Good weather")]
-        [InlineData("Cairo", "In Cairo 33 °C now. It's time to go to the beach")]
+        [InlineData("Oslo", "In Oslo -3 °C. Dress warm")]
+        [InlineData("Minsk", "In Minsk 5 °C. It's fresh")]
+        [InlineData("Canberra", "In Canberra 27 °C. Good weather")]
+        [InlineData("Cairo", "In Cairo 33 °C. It's time to go to the beach")]
         public async void GetWeatherAsync_CorrectInput_ReturnMessageWithData(string cityName, string message)
         {
             //Arrange
@@ -77,6 +77,61 @@ namespace Tests.Services
 
             //Assert
             Assert.Equal("Empty input field", result.Message);
+        }
+
+
+        [Theory]
+        [InlineData("Oslo", 5)]
+        public async void GetForecastAsync_CorrectInput_ReturnMessageWithData(string cityName, int days)
+        {
+            //Arrange
+            var expected = _forecastFixture.GetWeather();
+            var expectedMessage =
+                $"Day 1:  In {cityName} -10 °C. Dress warm \n"+
+                $"Day 2:  In {cityName} -3 °C. Dress warm \n"+
+                $"Day 3:  In { cityName} 5 °C. It's fresh \n"+
+                $"Day 4:  In { cityName} 27 °C. Good weather \n"+
+                $"Day 5:  In { cityName} 33 °C. It's time to go to the beach \n";
+            _repoMock.Setup(x => x.GetForecastByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
+
+            //Act
+            var forecast = await _weatherService.GetForecastByCityNameAsync(cityName, days);
+
+            //Assert
+            Assert.Equal(forecast, expectedMessage);
+            Assert.False(expected.IsBadRequest);
+        }
+
+        [Theory]
+        [InlineData("Incorrect_case", 3)]
+        public async void GetForecastAsync_IncorrectInput_ReturnMessageWithError(string cityName, int days)
+        {
+            //Arrange
+            var expected = new Forecast { City = new City { Name = cityName }, IsBadRequest = true };
+            _repoMock.Setup(x => x.GetForecastByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
+
+            //Act
+            var weather = await _weatherService.GetForecastByCityNameAsync(cityName, days);
+
+            //Assert
+            Assert.True(expected.IsBadRequest);
+            Assert.Equal("City not found or input was incorrect", weather);
+        }
+
+        [Theory]
+        [InlineData("Oslo", 0)]
+        public async void GetForecastAsync_IncorrectInput_ReturnMessageWithError2(string cityName, int days)
+        {
+            //Arrange
+            var expected = new Forecast { City = new City { Name = cityName}, IsBadRequest = true };
+            _repoMock.Setup(x => x.GetForecastByCityNameAsync(It.IsAny<string>())).ReturnsAsync(expected);
+
+            //Act
+            var weather = await _weatherService.GetForecastByCityNameAsync(cityName, days);
+
+            //Assert
+            Assert.Equal("City not found or input was incorrect", weather);
+            Assert.True(expected.IsBadRequest);
         }
     }
 }
